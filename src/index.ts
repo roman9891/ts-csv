@@ -1,26 +1,24 @@
-import { CsvFileReader } from "./CsvFileReader"
+// import { MatchReader } from "./MatchReader"
+import { CsvFileReader} from './CSVFileReaderRefactor'
+import { MatchReaderRF } from "./MatchReaderRefactor"
+import { Summary } from "./Summary"
+import { WinsAnalysis } from "./analyzers/WinsAnalysis"
+import { ConsoleReport } from "./outputTargets/ConsoleReport"
+import { HTMLReport } from './outputTargets/HTMLReport'
 
-const reader = new CsvFileReader('football.csv')
-reader.read()
 
-let winsByTeam: {[key: string]: number} = {}
+// const reader = new MatchReader('football.csv')
+// reader.read()
 
-// enum MatchResult {
-//     HomeWin = 'H',
-//     AwayWin = 'A',
-//     Draw = 'D',
-// }
+const csvFileReader = new CsvFileReader('football.csv')
+const matchReader = new MatchReaderRF(csvFileReader)
 
-for (let match of reader.data) {
-    if (match[5] === 'H') {
-        let winner = match[1]
-        if (winsByTeam[winner]) winsByTeam[winner] ++
-        else winsByTeam[winner] = 1
-    } else if (match[5] === 'A') {
-        let winner = match[2]
-        if (winsByTeam[winner]) winsByTeam[winner] ++
-        else winsByTeam[winner] = 1
-    } 
-}
+matchReader.load()
 
-console.log(winsByTeam)
+const winsAnalysis = new WinsAnalysis('Wolves')
+// const consoleReport = new ConsoleReport()
+// const summary = new Summary(winsAnalysis, consoleReport)
+const htmlReport = new HTMLReport()
+const summary = new Summary(winsAnalysis, htmlReport)
+
+summary.buildAndPrintReport(matchReader.matches)

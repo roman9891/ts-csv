@@ -1,7 +1,7 @@
 import fs from 'fs'
 
-export abstract class CsvFileReader<T> {
-    data: T[] = []
+export class CsvFileReader {
+    data: string[][] = []
 
     constructor (public filename: string) {
 
@@ -13,8 +13,5 @@ export abstract class CsvFileReader<T> {
         })
         .split('\n')
         .map((row) => row.split(','))
-        .map(this.mapRow)
     }
-
-    abstract mapRow(row: string[]): T
 }
